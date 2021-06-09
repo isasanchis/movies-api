@@ -11,33 +11,21 @@
     </header>
 
     <main class="main">
-      <div class="movies-show" v-for="filme in filmes" :key="filme.id">
-        <filme
-        :titulo="filme.title"
-        :descricao="filme.overview">
-        </filme>
+      <div class="movies-show">
       </div>
     </main>
   </div>
 </template>
 
 <script>
-import Filme from './components/Filme.vue'
-import moviesApi from './services/moviesApi'
 import moviesMixin from './moviesMixin'
 
 export default {
   mixins: [ moviesMixin ],
-  components: { Filme },
   data() {
     return {
       filmes: []
     }
-  },
-  created() {
-    moviesApi.getAllMovies(movies => {
-      this.filmes = movies.data.data.results;
-    });
   }
 }
 </script>
