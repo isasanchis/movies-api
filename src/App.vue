@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @click="fecharPelaJanela">
     <header class="header">
       <div class="header-container">
         <h1>Movies Search</h1>
@@ -11,9 +11,25 @@
     </header>
 
     <main class="main">
-      <div class="movies-show">
+      <div class="movies-show" v-for="filme in filmes" :key="filme.id">
+        <img :src="'https://image.tmdb.org/t/p/w220_and_h330_face' + filme.poster_path" class="image"/>
+        <button id="btnModal" @click="abrirModal">Ver mais</button>
+
+        <div id="myModal" class="myModal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <span class="close" @click="fecharModal">&times;</span>
+              <h2>{{ filme.title }}</h2>
+            </div>
+            <div class="modal-body">
+              <p>{{ filme.overview }}</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </main>
+
   </div>
 </template>
 
@@ -24,8 +40,21 @@ export default {
   mixins: [ moviesMixin ],
   data() {
     return {
-      filmes: []
+      filmes: [],
     }
+  },
+  methods: {
+    abrirModal() {
+        document.getElementById("myModal").style.display = "block";
+    },
+    fecharModal() {
+        document.getElementById("myModal").style.display = "none";
+    },
+     fecharPelaJanela(e) {
+        if (e.target == document.getElementById("myModal")) {
+          document.getElementById("myModal").style.display = "none";
+      }
+    },
   }
 }
 </script>
@@ -100,9 +129,60 @@ input:focus::-webkit-input-placeholder {
 }
 
 .movies-show {
+  padding: 10px;
   text-align: center;
   color: black;
   font-weight: 300;
+  display: flex;
+}
+
+.image {
+  border-radius: 1%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  transition: 0.3s ease;
+}
+.image:hover {
+  opacity: 0.5;
+}
+#btnModal {
+  position: absolute;
+}
+
+.myModal {
+  display: none;
+  position: fixed; 
+  z-index: 1; 
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 </style>
