@@ -1,5 +1,6 @@
 <template>
-  <div id="app" @click="fecharPelaJanela">
+  <div id="app">
+
     <header class="header">
       <div class="header-container">
         <h1>Movies Search</h1>
@@ -12,23 +13,21 @@
 
     <main class="main">
       <div class="movies-show" v-for="filme in filmes" :key="filme.id">
-        <img :src="'https://image.tmdb.org/t/p/w220_and_h330_face' + filme.poster_path" class="image"/>
-        <button id="btnModal" @click="abrirModal">Ver mais</button>
-
-        <div id="myModal" class="myModal">
-          <div class="modal-content">
-            <div class="modal-header">
-              <span class="close" @click="fecharModal">&times;</span>
-              <h2>{{ filme.title }}</h2>
-            </div>
-            <div class="modal-body">
-              <p>{{ filme.overview }}</p>
-            </div>
-          </div>
-        </div>
-
+        <button class="show-modal" @click="mostrarModal(filme)"><img :src="'https://image.tmdb.org/t/p/w220_and_h330_face' + filme.poster_path" class="image" /></button>
       </div>
     </main>
+
+    <div class="modal-content" v-if="modalVisivel" @click="fecharModal">
+      <div class="modal">
+        <img :src="'https://image.tmdb.org/t/p/w220_and_h330_face' + filmeAExibir.poster_path" />
+          <span class="modal-titulo">
+            <h2> {{ filmeAExibir.title }} </h2>
+            <p> {{ filmeAExibir.overview }} </p>
+            <h4>Data de lançamento: {{ filmeAExibir.release_date }}</h4>
+          </span>
+        <span class="close" @click="fecharModal">&times;</span>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -41,19 +40,18 @@ export default {
   data() {
     return {
       filmes: [],
+      filmeAExibir: { title: '', overview: '', poster_path: '', release_date: ''},
+      modalVisivel: false,
     }
   },
   methods: {
-    abrirModal() {
-        document.getElementById("myModal").style.display = "block";
+    mostrarModal(filme) {
+      this.filmeAExibir = filme;
+      this.filmeAExibir.release_date = new Date(this.filmeAExibir.release_date).toLocaleDateString("pt-BR")
+      this.modalVisivel = true;
     },
     fecharModal() {
-        document.getElementById("myModal").style.display = "none";
-    },
-     fecharPelaJanela(e) {
-        if (e.target == document.getElementById("myModal")) {
-          document.getElementById("myModal").style.display = "none";
-      }
+      this.modalVisivel = false;
     },
   }
 }
@@ -123,13 +121,19 @@ input:focus::-webkit-input-placeholder {
   cursor: pointer;
   height: 38px;
 }
-
 .img_btn {
   height: 1.1rem;
 }
 
+.main {
+  margin: 0px 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .movies-show {
-  padding: 10px;
+  padding: 30px 20px;
   text-align: center;
   color: black;
   font-weight: 300;
@@ -137,21 +141,30 @@ input:focus::-webkit-input-placeholder {
 }
 
 .image {
+  height: 16rem;
+  width: 11rem;
   border-radius: 1%;
   margin: 0;
   padding: 0;
-  position: relative;
   transition: 0.3s ease;
 }
 .image:hover {
   opacity: 0.5;
 }
-#btnModal {
-  position: absolute;
+
+.show-modal {
+  border: none;
+  width: 11rem;
+  padding: 0;
+  height: 16rem;
 }
 
-.myModal {
-  display: none;
+.show-modal:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.modal-content {
   position: fixed; 
   z-index: 1; 
   left: 0;
@@ -159,16 +172,21 @@ input:focus::-webkit-input-placeholder {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 
-.modal-content {
+.modal {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+  display: flex;
+  justify-content: space-between;
+}
+.modal-titulo {
+  padding: 10px;
 }
 
 .close {
