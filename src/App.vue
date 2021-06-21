@@ -5,7 +5,7 @@
       <div class="header-container">
         <h1>Movies Search</h1>
         <div class="searchbox">
-          <input type="text" placeholder="Movies" class="input">
+          <input type="text" placeholder="Movies" class="input" @keyup.enter="obterFilmes">
           <button @click="obterFilmes" class="btn_submit"><img src="https://www.pngkey.com/png/full/87-872187_lupa-search-icon-white-png.png" class="img_btn"></button>
         </div>
       </div>
@@ -23,7 +23,8 @@
           <span class="modal-titulo">
             <h2> {{ filmeAExibir.title }} </h2>
             <p> {{ filmeAExibir.overview }} </p>
-            <h4>Data de lançamento: {{ filmeAExibir.release_date }}</h4>
+            <h4>Data de lançamento: {{ new Date(this.filmeAExibir.release_date).toLocaleDateString('pt-BR') }}</h4>
+            <h4>Nota: {{ filmeAExibir.vote_average }}</h4>
           </span>
         <span class="close" @click="fecharModal">&times;</span>
       </div>
@@ -40,14 +41,13 @@ export default {
   data() {
     return {
       filmes: [],
-      filmeAExibir: { title: '', overview: '', poster_path: '', release_date: ''},
+      filmeAExibir: { title: '', overview: '', poster_path: '', release_date: '', vote_average: ''},
       modalVisivel: false,
     }
   },
   methods: {
     mostrarModal(filme) {
       this.filmeAExibir = filme;
-      this.filmeAExibir.release_date = new Date(this.filmeAExibir.release_date).toLocaleDateString("pt-BR")
       this.modalVisivel = true;
     },
     fecharModal() {
